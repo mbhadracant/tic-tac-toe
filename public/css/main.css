@@ -1,0 +1,130 @@
+body { 
+    font-family: 'Lato', sans-serif;
+}
+
+#status { 
+    text-align:center;
+}
+
+#gameBoard {
+    display:none;
+}
+
+#mainMenu {
+    position:absolute;
+    left:42%;
+    top:30%;
+}
+
+.grid-line {
+  position: absolute;
+  background-color: black;
+}
+
+.tickBox {
+  position: absolute;
+  background-color: red;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top:40px;
+}
+
+#top-horz-grid {
+  height: 10px;
+  width: 320px;
+  top: 275px;
+  left: 450px;
+}
+
+#bottom-horz-grid {
+  height: 10px;
+  width: 320px;
+  top: 385px;
+  left: 450px;
+}
+
+#top-vert-grid {
+  height: 320px;
+  width: 10px;
+  top: 175px;
+  left: 550px;
+}
+
+#bottom-vert-grid {
+  height: 320px;
+  width: 10px;
+  top: 175px;
+  left: 660px;
+}
+
+#topLeft {
+  height: 100px;
+  width: 100px;
+  top: 175px;
+  left: 450px;
+}
+
+#topMiddle {
+  height: 100px;
+  width: 100px;
+  top: 175px;
+  left: 560px;
+}
+
+#topRight {
+  height: 100px;
+  width: 100px;
+  top: 175px;
+  left: 670px;
+}
+
+#middleLeft {
+  height: 100px;
+  width: 100px;
+  top: 285px;
+  left: 450px;
+}
+
+#middleMiddle {
+  height: 100px;
+  width: 100px;
+  top: 285px;
+  left: 560px;
+}
+
+#middleRight {
+  height: 100px;
+  width: 100px;
+  top: 285px;
+  left: 670px;
+}
+
+#bottomLeft {
+  height: 100px;
+  width: 100px;
+  top: 395px;
+  left: 450px;
+}
+
+#bottomMiddle {
+  height: 100px;
+  width: 100px;
+  top: 395px;
+  left: 560px;
+}
+
+#bottomRight {
+  height: 100px;
+  width: 100px;
+  top: 395px;
+  left: 670px;
+}

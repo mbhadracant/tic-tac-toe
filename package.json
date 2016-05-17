@@ -1,0 +1,8 @@
+{
+  "name": "tic-tac-toe",
+  "version": "0.0.1",
+  "description": "Node JS implementation of the tic-tac-toe game",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
