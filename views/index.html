@@ -58,6 +58,18 @@
         $('#player2-bt').click(function () {
             socket.emit('lock player 2');
         });
+        
+        socket.on('reset button player 1', function() { 
+            $('#player1-bt').html("PLAYER 1 JOIN");
+            $('#player1-bt').css("background-color", "#4CAF50");
+            $('#player1-bt').prop('disabled', false);
+        });
+        
+        socket.on('reset button player 2', function() { 
+            $('#player2-bt').html("PLAYER 2 JOIN");
+            $('#player2-bt').css("background-color", "#4CAF50");
+            $('#player2-bt').prop('disabled', false);
+        });
 
         socket.on('lock button player 1', function () {
             $('#player1-bt').html("PLAYER 1 JOINED");
@@ -76,6 +88,10 @@
         });
         
         socket.on('change player 2 text', function () {
+            $('#status').html("PLAYER 2");
+        });
+        
+        socket.on('update view when waiting', function (data) {
             $('#status').html("PLAYER 2");
         });
         

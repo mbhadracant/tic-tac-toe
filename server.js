@@ -10,6 +10,8 @@ var player2 = null;
 
 var gameStates = ['waiting', 'ready', 'game', 'completed']
 
+currentState = 'waiting';
+
 app.get("/", function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
     app.use(express.static(__dirname + '/public'));
@@ -45,12 +47,21 @@ var events = {
 
         clients[socket.client.id] = socket;
         console.log("User connected: " + socket.client.id);
+        
+        switch(currentState) { 
+            case gameStates[0]:
+                if (player1 != null) socket.emit('lock button player 1');
+                if (player2 != null) socket.emit('lock button player 2');
+                break;
+
+        }
+        
 
     },
 
     onLockPlayer1: function (socket) {
 
-        if (helper.checkBothPlayersAreSame(socket.client.id)) {
+        if (helper.checkIfClientIsPlayer(socket.client.id)) {
             return;
         }
 
@@ -63,7 +74,7 @@ var events = {
 
     onLockPlayer2: function (socket) {
 
-        if (helper.checkBothPlayersAreSame(socket.client.id)) {
+        if (helper.checkIfClientIsPlayer(socket.client.id)) {
             return;
         }
 
@@ -75,6 +86,17 @@ var events = {
     },
 
     onDisconnect: function (socket) {
+        
+        if(helper.checkIfClientIsPlayer()) { 
+            if(player1 == socket) {
+                player1 = null;
+                io.emit('reset button player 1');   
+            } else {
+                player2 = null;
+                io.emit('reset button player 2');   
+            }
+        }
+        
         delete clients[socket.client.id];
     }
 
@@ -82,8 +104,12 @@ var events = {
 
 var helper = {
     
-    checkBothPlayersAreSame: function (id) {
+    checkIfClientIsPlayer : function (id) {
        return player1 == clients[id] || player2 == clients[id] ? true : false;
-    }
+    },
+    
+    
+    
+    
 
 }
