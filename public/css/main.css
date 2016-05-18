@@ -1,8 +1,8 @@
-body { 
+body {
     font-family: 'Lato', sans-serif;
 }
 
-#header { 
+#header {
     text-align: center;
     margin: 0px auto;
     width:100%;
@@ -16,12 +16,12 @@ body {
     float:left;
 }
 
-#header-middle { 
+#header-middle {
     height:100%;
     display: inline-block;
 }
 
-#title { 
+#title {
     text-align:center;
     height:10px;
 }
@@ -146,4 +146,11 @@ body {
   width: 100px;
   top: 395px;
   left: 670px;
+}
+
+#counter {
+  position: absolute;
+  top: 250px;
+  left: 580px;
+  font-size: 100px;
 }

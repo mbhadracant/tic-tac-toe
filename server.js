@@ -33,6 +33,7 @@ io.on('connection', function (socket) {
         events.onDisconnect(socket);
     });
 
+
 });
 
 http.listen(3000, function () {
@@ -47,8 +48,8 @@ var events = {
 
         clients[socket.client.id] = socket;
         console.log("User connected: " + socket.client.id);
-        
-        switch(currentState) { 
+
+        switch(currentState) {
             case gameStates[0]:
                 if (player1 != null) socket.emit('lock button player 1');
                 if (player2 != null) socket.emit('lock button player 2');
@@ -67,12 +68,12 @@ var events = {
         io.emit('lock button player 1');
         socket.emit('change player 1 text');
         console.log("Player 1 Ready: " + socket.client.id);
-        
-        if(helper.checkBothPlayersReady) { 
+
+        if(helper.checkBothPlayersReady()) {
             curentState = 'ready'
             io.emit('game ready');
         }
-        
+
 
     },
 
@@ -86,41 +87,45 @@ var events = {
         io.emit('lock button player 2');
         socket.emit('change player 2 text');
         console.log("Player 2 Ready: " + socket.client.id);
-        
-        if(helper.checkBothPlayersReady) { 
+
+        if(helper.checkBothPlayersReady()) {
             curentState = 'ready'
             io.emit('game ready');
         }
 
     },
 
+    onBothPlayersReady: function () {
+      //TODO: fade the buttons and show count down and show the board
+    },
+
     onDisconnect: function (socket) {
-        
-        if(helper.checkIfClientIsPlayer()) { 
+
+        if(helper.checkIfClientIsPlayer()) {
             if(player1 == socket) {
                 player1 = null;
-                io.emit('reset button player 1');   
+                io.emit('reset button player 1');
             } else {
                 player2 = null;
-                io.emit('reset button player 2');   
+                io.emit('reset button player 2');
             }
         }
-        
+
         delete clients[socket.client.id];
     }
 
 };
 
 var helper = {
-    
+
     checkIfClientIsPlayer : function (id) {
        return player1 == clients[id] || player2 == clients[id] ? true : false;
     },
-    checkBothPlayersReady : function() { 
-        return player1 != null && player2 != null;   
+    checkBothPlayersReady : function() {
+        return player1 != null && player2 != null;
     }
-    
-    
-    
+
+
+
 
 }
