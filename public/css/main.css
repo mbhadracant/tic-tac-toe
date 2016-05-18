@@ -31,9 +31,8 @@ body {
 }
 
 #mainMenu {
-    position:absolute;
-    left:42%;
-    top:30%;
+    margin-top: 10%;
+    text-align: center;
 }
 
 .grid-line {

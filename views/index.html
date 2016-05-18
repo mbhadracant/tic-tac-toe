@@ -52,11 +52,11 @@
         var socket = io();
         
         $('#player1-bt').click(function () {
-            socket.emit('lock player 1', socket.id);
+            socket.emit('lock player 1');
         });
 
         $('#player2-bt').click(function () {
-            socket.emit('lock player 2', socket.id);
+            socket.emit('lock player 2');
         });
 
         socket.on('lock button player 1', function () {
