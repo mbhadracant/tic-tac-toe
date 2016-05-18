@@ -1,116 +1,85 @@
 <!doctype html>
 <html>
-  <head>
-      <link href="css/main.css" rel="stylesheet">
-      <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
 
-      <h1 id="status">WAITING FOR TWO PLAYERS TO JOIN...</h1>
+<head>
+    <link href="css/main.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+    
+    <div id="header">
+        <div id="header-left">
+            <h1 id="status">SPECTATOR</h1>
+        </div>
+        <div id="header-middle">
+            <h1 id="title">WAITING FOR TWO PLAYERS TO JOIN...</h1>
+        </div>
+    </div>
+    
     <div id="gameBoard">
-        <div id="top-horz-grid" class="grid-line">
+        
+        <div id="top-horz-grid" class="grid-line"></div>
+        <div id="bottom-horz-grid" class="grid-line"></div>
+        <div id="top-vert-grid" class="grid-line"></div>
+        <div id="bottom-vert-grid" class="grid-line"></div>
 
-        </div>
-
-        <div id="bottom-horz-grid" class="grid-line">
-
-        </div>
-
-        <div id="top-vert-grid" class="grid-line">
-
-        </div>
-
-        <div id="bottom-vert-grid" class="grid-line">
-
-        </div>
-
-
-        <div id="topLeft" class="tickBox">
-
-        </div>
-
-        <div id="topMiddle" class="tickBox">
-
-        </div>
-
-        <div id="topRight" class="tickBox">
-
-        </div>
-
-        <div id="middleLeft" class="tickBox">
-
-        </div>
-
-        <div id="middleMiddle" class="tickBox">
-
-        </div>
-
-        <div id="middleRight" class="tickBox">
-
-        </div>
-
-        <div id="bottomLeft" class="tickBox">
-
-        </div>
-
-        <div id="bottomMiddle" class="tickBox">
-
-        </div>
-
-        <div id="bottomRight" class="tickBox">
-
-        </div>
+        <div id="topLeft" class="tickBox"></div>
+        <div id="topMiddle" class="tickBox"></div>
+        <div id="topRight" class="tickBox"></div>
+        <div id="middleLeft" class="tickBox"></div>
+        <div id="middleMiddle" class="tickBox"></div>
+        <div id="middleRight" class="tickBox"></div>
+        <div id="bottomLeft" class="tickBox"></div>
+        <div id="bottomMiddle" class="tickBox"></div>
+        <div id="bottomRight" class="tickBox"></div>
 
     </div>
 
     <div id="mainMenu">
-      <div>
-        <button id="player1-bt" class="button">PLAYER 1 JOIN</button>
-      </div>
-
-      <div>
-        <button id="player2-bt" class="button">PLAYER 2 JOIN</button>
-      </div>
+        <div>
+            <button id="player1-bt" class="button">PLAYER 1 JOIN</button>
+        </div>
+        <div>
+            <button id="player2-bt" class="button">PLAYER 2 JOIN</button>
+        </div>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script   src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo="   crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
     <script>
-      var socket = io();
         
+        var socket = io();
         
-        
-        
-        $('#player1-bt').click( function() { 
-           
+        $('#player1-bt').click(function () {
             socket.emit('lock player 1', socket.id);
-            
         });
-        
-        $('#player2-bt').click( function() { 
+
+        $('#player2-bt').click(function () {
             socket.emit('lock player 2', socket.id);
         });
-        
-        socket.on('lock button player 1', function() { 
+
+        socket.on('lock button player 1', function () {
             $('#player1-bt').html("PLAYER 1 JOINED");
-            $('#player1-bt').css("background-color","red");
+            $('#player1-bt').css("background-color", "red");
             $('#player1-bt').prop('disabled', true);
         });
-        
-        socket.on('lock button player 2', function() { 
+
+        socket.on('lock button player 2', function () {
             $('#player2-bt').html("PLAYER 2 JOINED");
-            $('#player2-bt').css("background-color","red");
+            $('#player2-bt').css("background-color", "red");
             $('#player2-bt').prop('disabled', true);
         });
-        
-        socket.on('test', function() { 
-            $('body').css("background","black");
+
+        socket.on('change player 1 text', function () {
+            $('#status').html("PLAYER 1");
         });
         
+        socket.on('change player 2 text', function () {
+            $('#status').html("PLAYER 2");
+        });
         
-       
-
     </script>
 
-  </body>
+</body>
 </html>

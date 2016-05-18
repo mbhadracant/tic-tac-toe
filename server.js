@@ -5,8 +5,8 @@ var io = require("socket.io")(http);
 
 var clients = [];
 
-var player1Id = null;
-var player2Id = null;
+var player1 = null;
+var player2 = null;
 
 
 app.get("/", function(req, res){
@@ -16,39 +16,29 @@ app.get("/", function(req, res){
 });
 
 io.on('connection', function(socket) {
-
-    clients.push(socket);
-    console.log("User connected: " + socket.id);
+    
+    clients[socket.client.id];
+    console.log("User connected: " + socket.client.id);
 
     socket.on('lock player 1', function(id){
-      player1Id = id;
+      player1 = socket;
       io.emit('lock button player 1');
-      console.log("Player 1 Ready: " + socket.id);
+        socket.emit('change player 1 text');
+      console.log("Player 1 Ready: " + socket.client.id);
     });
 
     socket.on('lock player 2', function(id){
-      player2Id = id;
+      player2 = socket;
       io.emit('lock button player 2');
-      console.log("Player 2 Ready: " + socket.id);
+      socket.emit('change player 2 text');
+      console.log("Player 2 Ready: " + socket.client.id);
     });
 
   socket.on('disconnect', function(){
-      var index = clients.indexOf(socket);
-        if (index != -1) {
-            clients.splice(index, 1);
-        }
+      delete clients[socket.client.id];
   });
 
 });
-
-function getClient(id) {
-    for(i = 0; i < clients.length;i++) {
-        if(clients[i].id.substring(2,clients[i].id.length) == id) {
-            return clients[i];
-        }
-    }
-}
-
 
 http.listen(3000, function(){
   console.log("listening on *: 3000");
