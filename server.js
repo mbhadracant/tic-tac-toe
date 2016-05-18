@@ -53,9 +53,7 @@ var events = {
                 if (player1 != null) socket.emit('lock button player 1');
                 if (player2 != null) socket.emit('lock button player 2');
                 break;
-
         }
-        
 
     },
 
@@ -69,6 +67,12 @@ var events = {
         io.emit('lock button player 1');
         socket.emit('change player 1 text');
         console.log("Player 1 Ready: " + socket.client.id);
+        
+        if(helper.checkBothPlayersReady) { 
+            curentState = 'ready'
+            io.emit('game ready');
+        }
+        
 
     },
 
@@ -82,6 +86,11 @@ var events = {
         io.emit('lock button player 2');
         socket.emit('change player 2 text');
         console.log("Player 2 Ready: " + socket.client.id);
+        
+        if(helper.checkBothPlayersReady) { 
+            curentState = 'ready'
+            io.emit('game ready');
+        }
 
     },
 
@@ -107,7 +116,9 @@ var helper = {
     checkIfClientIsPlayer : function (id) {
        return player1 == clients[id] || player2 == clients[id] ? true : false;
     },
-    
+    checkBothPlayersReady : function() { 
+        return player1 != null && player2 != null;   
+    }
     
     
     
