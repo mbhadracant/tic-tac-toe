@@ -16,39 +16,34 @@ app.get("/", function(req, res){
 });
 
 io.on('connection', function(socket) {
-  
+
     clients.push(socket);
-    console.log(socket.id);
-  socket.on('lock player 1', function(id){
-     player1Id = id;
-     io.emit('lock button player 1');
-    var client = getClient(id);
-      
-      client.emit('test');
-      
-  });
-    
+    console.log("User connected: " + socket.id);
+
+    socket.on('lock player 1', function(id){
+      player1Id = id;
+      io.emit('lock button player 1');
+      console.log("Player 1 Ready: " + socket.id);
+    });
+
     socket.on('lock player 2', function(id){
-     player2Id = id;
-    io.emit('lock button player 2');
-  });
+      player2Id = id;
+      io.emit('lock button player 2');
+      console.log("Player 2 Ready: " + socket.id);
+    });
 
   socket.on('disconnect', function(){
-      
-      
-    var index = clients.indexOf(socket);
+      var index = clients.indexOf(socket);
         if (index != -1) {
             clients.splice(index, 1);
         }
   });
- 
 
 });
 
-function getClient(id) { 
-
-    for(i = 0; i < clients.length;i++) { 
-        if(clients[i].id.substring(2,clients[i].id.length) == id) { 
+function getClient(id) {
+    for(i = 0; i < clients.length;i++) {
+        if(clients[i].id.substring(2,clients[i].id.length) == id) {
             return clients[i];
         }
     }
