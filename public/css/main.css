@@ -1,21 +1,19 @@
 body {
     font-family: 'Lato', sans-serif;
 }
-span {
-  font-size: 2.5vw;
-}
+
 #header {
     text-align: center;
     margin: 0px auto;
     width:100%;
-    height: 13vh;
+    height: 10vh;
     border-bottom: 1px solid lightgrey;
 }
 
 #header-left {
-  position: absolute;
-  left:2%;
-    height:100%;
+    position: absolute;
+    left:2%;
+    height:10vh;
     display: inline-block;
     float:left;
 }
@@ -23,31 +21,39 @@ span {
 #header-middle {
     height:100%;
     display: inline-block;
+    vertical-align: middle;
 }
 
-#title {
-    text-align:center;
-    height:10px;
+#title, #status,.button-text {
+  line-height:10vh;
 }
 
-#gameBoard {
-    display:none;
+#game-board {
+  position: absolute;
+  width: 295px;
+  height: 295px;
+  z-index: 15;
+  top: 50%;
+  left: 50%;
+  margin: -100px 0 0 -150px;
+  display:none;
 }
 
-#mainMenu {
+#main-menu {
     margin-top: 10%;
     text-align: center;
     display:none;
 }
 
-.grid-line {
-  position: absolute;
-  background-color: black;
+.tick-box {
+  position: relative;
+  cursor:pointer;
+  width:95px;
+  height:95px;
 }
 
-.tickBox {
-  position: absolute;
-  cursor:pointer;
+.button:hover {
+  background-color: darkgreen;
 }
 
 .button {
@@ -62,106 +68,64 @@ span {
     margin-top:40px;
 }
 
-#top-horz-grid {
-  height: 10px;
-  width: 320px;
-  top: 275px;
-  left: 450px;
+#top-left {
+  border-bottom: 5px solid black;
+  border-right:5px solid black;
 }
 
-#bottom-horz-grid {
-  height: 10px;
-  width: 320px;
-  top: 385px;
-  left: 450px;
+#top-middle {
+  left:100px;
+  top:-100px;
+  border-bottom: 5px solid black;
+  border-right:5px solid black;
 }
 
-#top-vert-grid {
-  height: 320px;
-  width: 10px;
-  top: 175px;
-  left: 550px;
+#top-right {
+  left:200px;
+  top:-200px;
+  border-bottom: 5px solid black;
 }
 
-#bottom-vert-grid {
-  height: 320px;
-  width: 10px;
-  top: 175px;
-  left: 660px;
+#middle-left {
+  top:-200px;
+  border-bottom: 5px solid black;
+  border-right:5px solid black;
 }
 
-#topLeft {
-  height: 100px;
-  width: 100px;
-  top: 175px;
-  left: 450px;
+#middle-middle {
+  left:100px;
+  top:-300px;
+  border-bottom: 5px solid black;
+  border-right:5px solid black;
 }
 
-#topMiddle {
-  height: 100px;
-  width: 100px;
-  top: 175px;
-  left: 560px;
+#middle-right {
+  left:200px;
+  top:-400px;
+  border-bottom: 5px solid black;
 }
 
-#topRight {
-  height: 100px;
-  width: 100px;
-  top: 175px;
-  left: 670px;
+#bottom-left {
+  top:-400px;
+  border-right:5px solid black;
 }
 
-#middleLeft {
-  height: 100px;
-  width: 100px;
-  top: 285px;
-  left: 450px;
+#bottom-middle {
+  left:100px;
+  top:-500px;
+  border-top:5px solid black;
+  border-right:5px solid black;
 }
 
-#middleMiddle {
-  height: 100px;
-  width: 100px;
-  top: 285px;
-  left: 560px;
+#bottom-right {
+  left:200px;
+  top:-600px;
+  border-top: 5px solid black;
 }
 
-#middleRight {
-  height: 100px;
-  width: 100px;
-  top: 285px;
-  left: 670px;
-}
-
-#bottomLeft {
-  height: 100px;
-  width: 100px;
-  top: 395px;
-  left: 450px;
-}
-
-#bottomMiddle {
-  height: 100px;
-  width: 100px;
-  top: 395px;
-  left: 560px;
-}
-
-#bottomRight {
-  height: 100px;
-  width: 100px;
-  top: 395px;
-  left: 670px;
-}
-
-#counter {
-  position: absolute;
-  top: 250px;
-  left: 580px;
-  font-size: 100px;
-}
 
 .circle {
-position: absolute;
+ position: absolute;
  width:50px;
  height:50px;
  border: 8px solid;

@@ -72,7 +72,6 @@ var events = {
     },
 
     onLockPlayer1: function (socket) {
-
         if (helper.checkIfClientIsPlayer(socket.client.id)) {
             return;
         }
@@ -140,7 +139,6 @@ var events = {
       };
 
       currentState = 'game';
-
       io.emit('show game', game);
 
 

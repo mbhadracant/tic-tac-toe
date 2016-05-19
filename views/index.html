@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link href="css/main.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 </head>
 
@@ -17,26 +17,19 @@
         </div>
     </div>
 
-    <div id="gameBoard">
-
-        <div id="top-horz-grid" class="grid-line"></div>
-        <div id="bottom-horz-grid" class="grid-line"></div>
-        <div id="top-vert-grid" class="grid-line"></div>
-        <div id="bottom-vert-grid" class="grid-line"></div>
-
-        <div id="topLeft" class="tickBox"></div>
-        <div id="topMiddle" class="tickBox"> </div>
-        <div id="topRight" class="tickBox"> </div>
-        <div id="middleLeft" class="tickBox"> </div>
-        <div id="middleMiddle" class="tickBox">  </div>
-        <div id="middleRight" class="tickBox">  </div>
-        <div id="bottomLeft" class="tickBox">  </div>
-        <div id="bottomMiddle" class="tickBox">  </div>
-        <div id="bottomRight" class="tickBox"> </div>
-
+    <div id="game-board">
+        <div id="top-left" class="tick-box"></div>
+        <div id="top-middle" class="tick-box"> </div>
+        <div id="top-right" class="tick-box"> </div>
+        <div id="middle-left" class="tick-box"> </div>
+        <div id="middle-middle" class="tick-box">  </div>
+        <div id="middle-right" class="tick-box">  </div>
+        <div id="bottom-left" class="tick-box">  </div>
+        <div id="bottom-middle" class="tick-box">  </div>
+        <div id="bottom-right" class="tick-box"> </div>
     </div>
 
-    <div id="mainMenu">
+    <div id="main-menu">
         <div>
             <button id="player1-bt" class="button">PLAYER 1 JOIN</button>
         </div>
@@ -49,9 +42,11 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
+    <script src="js/flowtype.js"></script>
+    <script src="js/socket.js"></script>
     <script>
 
-        var socket = io();
+        $('body').flowtype();
 
         $('#player1-bt').click(function () {
             socket.emit('lock player 1');
@@ -62,100 +57,17 @@
         });
 
 
-        $( ".tickBox" ).hover(
-  function() {
+  $( ".tick-box" ).hover(function() {
 
-if($('#status').html() == 'PLAYER 1') {
-  $( this ).append( $( "<div class='circle' style='opacity:0.4;'></div>" ) );
-} else if($('#status').html() == 'PLAYER 2') {
-    $( this ).append( $( "<div class='cross' style='opacity:0.4;'>x</div>" ) );
-  }
-  console.log("kek");
-
-  }, function() {
-    $( this ).find( "div" ).remove();
-  }
-);
-
-
-        socket.on('reset button player 1', function() {
-            $('#player1-bt').html("PLAYER 1 JOIN");
-            $('#player1-bt').css("background-color", "#4CAF50");
-            $('#player1-bt').prop('disabled', false);
-        });
-
-        socket.on('reset button player 2', function() {
-            $('#player2-bt').html("PLAYER 2 JOIN");
-            $('#player2-bt').css("background-color", "#4CAF50");
-            $('#player2-bt').prop('disabled', false);
-        });
-
-        socket.on('show when waiting', function (data) {
-
-            $('#title').html("WAITING FOR TWO PLAYERS TO JOIN...");
-            $('#mainMenu').show();
-          if(data.player1Button) {
-            $('#player1-bt').html("PLAYER 1 JOINED");
-            $('#player1-bt').css("background-color", "red");
-            $('#player1-bt').prop('disabled', true);
-          }
-
-          if(data.player2Button) {
-            $('#player2-bt').html("PLAYER 2 JOINED");
-            $('#player2-bt').css("background-color", "red");
-            $('#player2-bt').prop('disabled', true);
-          }
-
-
-        });
-
-
-        socket.on('lock button player 1', function () {
-            $('#player1-bt').html("PLAYER 1 JOINED");
-            $('#player1-bt').css("background-color", "red");
-            $('#player1-bt').prop('disabled', true);
-        });
-
-        socket.on('lock button player 2', function () {
-            $('#player2-bt').html("PLAYER 2 JOINED");
-            $('#player2-bt').css("background-color", "red");
-            $('#player2-bt').prop('disabled', true);
-        });
-
-        socket.on('change player 1 text', function () {
-            $('#status').html("PLAYER 1");
-        });
-
-        socket.on('change player 2 text', function () {
-            $('#status').html("PLAYER 2");
-        });
-
-        socket.on('game ready', function (){
-          $('#player1-bt').fadeOut();
-          $('#player2-bt').fadeOut();
-
-          var counter = 5;
-
-          var intervalId = setInterval(function(){
-            if (counter == 0) {
-              clearInterval(intervalId);
-              socket.emit('init game');
-            }
-
-
-            $('#title').html("Game starting in " + counter);
-            counter--;
-          },1000);
-
-
-        });
-
-        socket.on('show game', function (game){
-            $('#title').html("PLAYER " + game.turn + " TURN");
-            $('#gameBoard').fadeIn();
-        });
-
-
+    if($('#status').html() == 'PLAYER 1') {
+      $( this ).append( $( "<div class='circle' style='opacity:0.4;'></div>" ) );
+    } else if($('#status').html() == 'PLAYER 2') {
+        $( this ).append( $( "<div class='cross' style='opacity:0.4;'>x</div>" ) );
+      }
+    }, function() {
+        $( this ).find( "div" ).remove();
+      }
+  );
 
 
     </script>
