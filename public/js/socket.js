@@ -27,8 +27,6 @@ socket.on('show when waiting', function (data) {
     $('#player2-bt').css("background-color", "red");
     $('#player2-bt').prop('disabled', true);
   }
-
-
 });
 
 
@@ -56,23 +54,60 @@ socket.on('game ready', function (){
   $('#player1-bt').fadeOut();
   $('#player2-bt').fadeOut();
 
-  var counter = 5;
+});
 
-  var intervalId = setInterval(function(){
-    if (counter == 0) {
-      clearInterval(intervalId);
-      socket.emit('init game');
-    }
+socket.on('change title', function(data){
+  $('#title').html(data.message);
+});
 
+socket.on('apply tick', function(data){
+  $('#title').html("PLAYER " + data.turn + " TURN");
+  if(data.turn == 1) { 
+		$( "div[data-position-x='" + data.x + "'][data-position-y='" + data.y + "']").append($( "<div class='cross'><div class='line1'></div><div class='line2'></div></div>" ));
+	
 
-    $('#title').html("GAME STARTING IN " + counter);
-    counter--;
-  },1000);
-
+	} else { 
+	 $( "div[data-position-x='" + data.x + "'][data-position-y='" + data.y + "']").append($( "<div class='circle'></div>" ));
+	}
+	
 
 });
 
+
 socket.on('show game', function (game){
     $('#title').html("PLAYER " + game.turn + " TURN");
+
+	for(i = 0; i < 3; i++) { 
+	for(j = 0; j < 3; j++) { 
+  	  if(game.board[i][j] != undefined) { 
+		 if(game.board[i][j] == 1) {
+		 	$( "div[data-position-x='" + i + "'][data-position-y='" + j + "']").append($( "<div class='circle'></div>" ));
+		 } else { 
+			$( "div[data-position-x='" + i + "'][data-position-y='" + j + "']").append($( "<div class='cross'><div class='line1'></div><div class='line2'></div></div>" ));
+		 }
+	}
+  }
+}
+    
     $('#game-board').fadeIn();
+   
+});
+
+socket.on('show winning positions', function(data){
+  		
+console.log("kek");
+		
+		for(i = 0; i < 3; i++) { 
+			if(data.player == 1) {
+				$( "div[data-position-x='" + data.winningPositions[i].x + "'][data-position-y='" + data.winningPositions[i].y + "']").find("div").css("border-color","green");
+			} else { 
+				if($( "div[data-position-x='" + data.winningPositions[i].x + "'][data-position-y='" + data.winningPositions[i].y + "']").find("div") != undefined) {
+					var cross = $( "div[data-position-x='" + data.winningPositions[i].x + "'][data-position-y='" + data.winningPositions[i].y + "']").find("div")[0];
+					$(cross).children().css("background","green");
+				}
+			}
+		}
+
+		
+
 });

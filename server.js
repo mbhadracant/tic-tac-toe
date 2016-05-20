@@ -10,9 +10,11 @@ var player2 = null;
 
 var game = null;
 
-var gameStates = ['waiting', 'ready', 'game', 'completed'];
-
 var currentState = 'waiting';
+
+var winningPositions = null;
+
+var timer = 5;
 
 app.get("/", function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
@@ -39,6 +41,9 @@ io.on('connection', function (socket) {
       events.onDisconnect(socket);
     });
 
+   socket.on('register tick', function(data) { 
+	events.onRegisterTick(socket,data);
+   });
 
 
 });
@@ -51,6 +56,8 @@ http.listen(3000, function () {
 
 var events = {
 
+ 
+
     onConnect: function (socket) {
 
         clients[socket.client.id] = socket;
@@ -58,15 +65,17 @@ var events = {
 
         console.log(currentState);
         switch(currentState) {
-            case gameStates[0]:
+            case 'waiting':
                 events.showWhenWaiting(socket);
                 break;
-            case gameStates[1]:
+            case 'ready':
                 events.showWhenReady(socket);
                 break;
-            case gameStates[2]:
+            case 'game':
                 events.showInGame(socket);
                 break;
+	    case 'completed':
+		events.showCompleted(socket);
         }
 
     },
@@ -82,8 +91,7 @@ var events = {
         console.log("Player 1 Ready: " + socket.client.id);
 
         if(helper.checkBothPlayersReady()) {
-            currentState = 'ready';
-            io.emit('game ready');
+            this.onGameReady(socket);
         }
 
 
@@ -101,8 +109,7 @@ var events = {
         console.log("Player 2 Ready: " + socket.client.id);
 
         if(helper.checkBothPlayersReady()) {
-            currentState = 'ready';
-            io.emit('game ready');
+            this.onGameReady(socket);
         }
 
     },
@@ -122,28 +129,56 @@ var events = {
         delete clients[socket.client.id];
     },
 
-    onInitGame : function(socket) {
+    onGameReady : function(socket) { 
+	currentState = 'ready';
+	io.emit('game ready');
 
-      game = {
+	 var intervalId = setInterval(function(){
+	    if (timer == 0) {
+	      clearInterval(intervalId);
+	      helper.createGame();
+	      currentState = 'game';
+      	      io.emit('show game', game);
+	      return;
+	    }
 
-          board: [
-            [0,0,0],
-            [0,0,0],
-            [0,0,0]
-          ],
+	    io.emit('change title', {message : "GAME STARTING IN " + timer + "..."});
+	   
+	    timer--;
+	  },1000);
+   },
 
-          turn : Math.floor((Math.random() * 2) + 1),
+    onRegisterTick : function(socket, data) { 
+	if((game.turn == 1 && player1 == socket) || (game.turn == 2 && player2 == socket)) { 
+		if(game.board[data.x][data.y] != undefined) return;
+		game.board[data.x][data.y] = game.turn;
+		game.turn = (game.turn == 1) ? 2 : 1;
+		io.emit('apply tick', { x : data.x, y : data.y, turn : game.turn });
+		if(helper.checkPlayerWin()) { 
+			player1 = null;
+			player2 = null;
+			currentState = 'completed';
+			var playerWon = game.turn == 1 ? 2 : 1;
+			io.emit('show winning positions', { winningPositions : winningPositions, player : playerWon });
+			timer = 5;
+	
+			var intervalId = setInterval(function(){
+	    		if (timer == 0) {
+	      		clearInterval(intervalId);
+	      
+	      			return;
+	   		 }
 
-          timer : 15,
-
-      };
-
-      currentState = 'game';
-      io.emit('show game', game);
-
-
-
+	    		io.emit('change title', {message : "PLAYER " + playerWon + " HAS WON! NEW GAME WILL BEGIN IN " + timer + "..." });
+	   
+		    timer--;
+		  },1000);
+			}
+	}
+		
     },
+
+ 
 
     showWhenWaiting : function(socket) {
       socket.emit('show when waiting',
@@ -153,15 +188,18 @@ var events = {
 
     showWhenReady : function(socket) {
       socket.emit('game ready');
+      socket.emit('display counter', timer);
     },
 
     showInGame : function(socket) {
-      console.log("fasasfa");
-      socket.emit('show game',game);
+      socket.emit('show game', game);
     },
 
-    showCompleted : function() {
-
+    showCompleted : function(socket) {
+	var playerWon = game.turn == 1 ? 2 : 1;
+	socket.emit('show game', game);
+	socket.emit('show winning positions', { winningPositions : winningPositions, player : playerWon });
+	socket.emit('change title', {message : "PLAYER " + playerWon + " HAS WON! NEW GAME WILL BEGIN IN " + timer + "..." });
     }
 
 
@@ -176,9 +214,52 @@ var helper = {
     },
     checkBothPlayersReady : function() {
         return player1 != null && player2 != null;
-    }
+    },
 
+    createGame : function() { 
+	game = {
 
+          board: [
+            [,,],
+            [,,],
+            [,,]
+          ],
 
+          turn : Math.floor((Math.random() * 2) + 1)
 
-}
+      };
+    }, 
+
+   checkPlayerWin : function() {
+
+		if( game.board[0][0] === game.board[0][1] && game.board[0][2] === game.board[0][0] && game.board[0][1] === game.board[0][2] && game.board[0][0] != undefined)  { 
+			winningPositions = [{x : 0, y : 0}, {x : 0, y : 1}, {x : 0, y : 2}];
+			return true;
+		} else if(game.board[1][0] === game.board[1][1] && game.board[1][0] === game.board[1][2] && game.board[1][2] === game.board[1][1] && game.board[1][0] != undefined) { 
+			winningPositions = [{x : 1, y : 0}, {x : 1, y : 1}, {x : 1, y : 2}];
+			return true;
+		} else if(game.board[2][0] === game.board[2][1] && game.board[2][0] === game.board[2][2] && game.board[2][2] === [2][1] && game.board[2][0] != undefined) { 
+			winningPositions = [{x : 2, y : 0}, {x : 2, y : 1}, {x : 2, y : 2}];
+			return true;
+		} else if(game.board[0][0] === game.board[1][0] && game.board[0][0] === game.board[2][0] && game.board[2][0] === game.board[1][0] && game.board[0][0] != undefined) { 
+			winningPositions = [{x : 0, y : 0}, {x : 1, y : 0}, {x : 2, y : 0}];
+			return true;
+		} else if(game.board[0][1] == game.board[1][1] && game.board[0][1] == game.board[2][1] && game.board[2][1] == game.board[1][1] && game.board[0][1] != undefined) { 
+			winningPositions = [{x : 0, y : 1}, {x : 1, y : 1}, {x : 2, y : 1}];
+			return true;
+		} else if(game.board[0][2] == game.board[1][2] && game.board[0][2] == game.board[2][2] && game.board[2][2] == game.board[1][2] && game.board[0][2] != undefined) { 
+			winningPositions = [{x : 0, y : 2}, {x : 1, y : 2}, {x : 2, y : 2}];
+			return true;
+		} else if(game.board[0][0] == game.board[1][1] && game.board[0][0] == game.board[2][2] && game.board[2][2] == game.board[1][1] && game.board[0][0] != undefined) { 
+			winningPositions = [{x : 0, y : 0}, {x : 1, y : 1}, {x : 2, y : 2}];
+			return true;
+		} else if(game.board[0][2] == game.board[1][1] && game.board[0][2] == game.board[2][0] && game.board[2][0] == game.board[1][1] && game.board[0][2] != undefined) { 
+			winningPositions = [{x : 0, y : 2}, {x : 1, y : 1}, {x : 2, y : 0}];
+			return true;
+		} else { 
+			return false;
+		}
+
+		
+	}
+};
