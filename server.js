@@ -13,7 +13,7 @@ var game = null;
 var currentState = 'waiting';
 
 var winningPositions = null;
-
+var intervalId = null;
 var timer = 5;
 
 app.get("/", function(req, res) {
@@ -22,7 +22,7 @@ app.get("/", function(req, res) {
 });
 
 io.on('connection', function(socket) {
-
+    console.log(socket.client.id);
     events.onConnect(socket);
 
     socket.on('lock player 1', function() {
@@ -56,14 +56,10 @@ http.listen(3000, function() {
 
 var events = {
 
-
-
     onConnect: function(socket) {
 
         clients[socket.client.id] = socket;
-        console.log("User connected: " + socket.client.id);
 
-        console.log(currentState);
         switch (currentState) {
             case 'waiting':
                 events.showWhenWaiting(socket);
@@ -81,6 +77,8 @@ var events = {
     },
 
     onLockPlayer1: function(socket) {
+
+
         if (helper.checkIfClientIsPlayer(socket.client.id)) {
             return;
         }
@@ -88,13 +86,10 @@ var events = {
         player1 = socket;
         io.emit('lock button player 1');
         socket.emit('change player 1 text');
-        console.log("Player 1 Ready: " + socket.client.id);
 
         if (helper.checkBothPlayersReady()) {
             this.onGameReady(socket);
         }
-
-
     },
 
     onLockPlayer2: function(socket) {
@@ -106,7 +101,6 @@ var events = {
         player2 = socket;
         io.emit('lock button player 2');
         socket.emit('change player 2 text');
-        console.log("Player 2 Ready: " + socket.client.id);
 
         if (helper.checkBothPlayersReady()) {
             this.onGameReady(socket);
@@ -116,13 +110,22 @@ var events = {
 
     onDisconnect: function(socket) {
 
-        if (helper.checkIfClientIsPlayer()) {
-            if (player1 == socket) {
-                player1 = null;
-                io.emit('reset button player 1');
+        if (helper.checkIfClientIsPlayer(socket.client.id)) {
+
+            if(currentState == 'waiting') {
+                if(player1 == socket) {
+                  player1 = null;
+                  io.emit('reset button player 1');
+                } else {
+                  player2 = null;
+                  io.emit('reset button player 2');
+                }
             } else {
-                player2 = null;
-                io.emit('reset button player 2');
+              clearInterval(intervalId);
+              player1 = null;
+              player2 = null;
+              currentState = 'waiting';
+              io.emit('reset');
             }
         }
 
@@ -133,7 +136,7 @@ var events = {
         currentState = 'ready';
         io.emit('game ready');
         timer = 5;
-        var intervalId = setInterval(function() {
+         intervalId = setInterval(function() {
             if (timer == 0) {
                 clearInterval(intervalId);
                 helper.createGame();
@@ -174,7 +177,7 @@ var events = {
                 });
                 timer = 5;
 
-                var intervalId = setInterval(function() {
+                intervalId = setInterval(function() {
                     if (timer == 0) {
                         clearInterval(intervalId);
                         io.emit('reset');
@@ -194,7 +197,7 @@ var events = {
                     player2 = null;
                     currentState = 'completed';
                     timer = 5;
-                    var intervalId = setInterval(function() {
+                     intervalId = setInterval(function() {
                         if (timer == 0) {
                             clearInterval(intervalId);
                             io.emit('reset');
@@ -228,7 +231,6 @@ var events = {
             player1Button: player1 != null,
             player2Button: player2 != null
         });
-
     },
 
     showWhenReady: function(socket) {
@@ -379,7 +381,5 @@ var helper = {
         } else {
             return false;
         }
-
-
     }
 };
