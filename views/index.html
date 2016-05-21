@@ -22,10 +22,10 @@
         <div id="top-middle" class="tick-box" data-position-x="0" data-position-y="1"> </div>
         <div id="top-right" class="tick-box" data-position-x="0" data-position-y="2"> </div>
         <div id="middle-left" class="tick-box" data-position-x="1" data-position-y="0"> </div>
-        <div id="middle-middle" class="tick-box" data-position-x="1" data-position-y="1">  </div>
-        <div id="middle-right" class="tick-box" data-position-x="1" data-position-y="2">  </div>
-        <div id="bottom-left" class="tick-box" data-position-x="2" data-position-y="0">  </div>
-        <div id="bottom-middle" class="tick-box" data-position-x="2" data-position-y="1">  </div>
+        <div id="middle-middle" class="tick-box" data-position-x="1" data-position-y="1"> </div>
+        <div id="middle-right" class="tick-box" data-position-x="1" data-position-y="2"> </div>
+        <div id="bottom-left" class="tick-box" data-position-x="2" data-position-y="0"> </div>
+        <div id="bottom-middle" class="tick-box" data-position-x="2" data-position-y="1"> </div>
         <div id="bottom-right" class="tick-box" data-position-x="2" data-position-y="2"> </div>
     </div>
 
@@ -45,45 +45,42 @@
     <script src="js/flowtype.js"></script>
     <script src="js/socket.js"></script>
     <script>
-
         $('body').flowtype();
 
-        $('#player1-bt').click(function () {
+        $('#player1-bt').click(function() {
 
             socket.emit('lock player 1');
         });
 
-        $('#player2-bt').click(function () {
+        $('#player2-bt').click(function() {
             socket.emit('lock player 2');
         });
 
-	
-	$('.tick-box').click(function() { 
-		
-	    var data = { x : $(this).attr("data-position-x"), y : $(this).attr("data-position-y")};
-	    socket.emit('register tick', data);
-	});
 
+        $('.tick-box').click(function() {
 
+            var data = {
+                x: $(this).attr("data-position-x"),
+                y: $(this).attr("data-position-y")
+            };
+            socket.emit('register tick', data);
+        });
 
+        $(".tick-box").hover(function() {
+            if ($(this).children().length >= 1) return;
 
-  $( ".tick-box" ).hover(function() {
-	if($(this).children().length >= 1) return;
-	
-    if($('#status').html() == 'PLAYER 1') {
-	
-      $( this ).append( $( "<div class='circle' style='opacity:0.4;'></div>" ) );
-    } else if($('#status').html() == 'PLAYER 2') {
-        $( this ).append( $( "<div class='cross' style='opacity:0.4;'><div class='line1'></div><div class='line2'></div></div>" ) );
-      }
-    }, function() {
-	if(($(this).children().length == 1 && $(this).find("div").css("opacity") == 1 ) || $(this).children().length == 2) return;
-        $( this ).find( "div" ).remove();
-      }
-  );
+            if ($('#status').html() == 'PLAYER 1') {
 
-
+                $(this).append($("<div class='circle' style='opacity:0.4;'></div>"));
+            } else if ($('#status').html() == 'PLAYER 2') {
+                $(this).append($("<div class='cross' style='opacity:0.4;'><div class='line1'></div><div class='line2'></div></div>"));
+            }
+        }, function() {
+            if (($(this).children().length == 1 && $(this).find("div").css("opacity") == 1) || $(this).children().length == 2) return;
+            $(this).find("div").remove();
+        });
     </script>
 
 </body>
+
 </html>
